@@ -5,7 +5,7 @@ import Header from './Header';
 import Table from './Table';
 import Add from './Add';
 import Edit from './Edit';
-
+import axios from 'axios'
 import { employeesData } from '../../data';
 
 const Dashboard = ({ setIsAuthenticated }) => {
@@ -13,6 +13,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [membres,setMemebres]=useState([])
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem('employees_data'));
@@ -52,6 +53,19 @@ const Dashboard = ({ setIsAuthenticated }) => {
       }
     });
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/membres');
+        setMemebres(response.data);
+        console.log('success',membres);
+      } catch (error) {
+        console.log('error', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="container">
@@ -62,7 +76,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
             setIsAuthenticated={setIsAuthenticated}
           />
           <Table
-            employees={employees}
+            data={membres}
             handleEdit={handleEdit}
             handleDelete={handleDelete}
           />
